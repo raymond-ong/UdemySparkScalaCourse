@@ -1,0 +1,92 @@
+[RDD]
+Low-level, but can be fastest.
+Use SQL Dataset wherever possible.
+
+
+[Datasets]
+
+
+[DataFrames]
+
+
+[SBT]
+Do you need to download Spark in order to run spark?
+No. From IntelliJ, using build.sbt, specify the spark libraries and it will donwload automatically all the necessary libraries.
+
+A. For running in IntelliJ:
+----------------------------------------------------------------------
+name := "SparkScalaCourse"
+
+version := "0.1"
+
+scalaVersion := "2.12.12"
+
+libraryDependencies ++= Seq(
+  "org.apache.spark" %% "spark-core" % "3.0.0",
+  "org.apache.spark" %% "spark-sql" % "3.0.0",
+  "org.apache.spark" %% "spark-mllib" % "3.0.0",
+  "org.apache.spark" %% "spark-streaming" % "3.0.0",
+  "org.apache.spark" % "spark-streaming-kafka-0-10_2.12" % "3.0.1",
+  "org.apache.kafka" %% "kafka" % "2.6.0",
+  "org.twitter4j" % "twitter4j-core" % "4.0.4",
+  "org.twitter4j" % "twitter4j-stream" % "4.0.4",
+)
+----------------------------------------------------------------------
+
+B. For running using spark-submit:
+- specify "provided" if the environment where we will be running spark already has spark installed
+- But i specified "provided" in order to resolve issue about "deduplicates"
+- %%: use it if you don't want to specify the version in the 2nd token. I think it will fetch the latest version from Maven
+- %: use it if you want to specify a certain version.
+- Tip: Check Maven site for the supported Scala Version + Package versions.
+----------------------------------------------------------------------
+name := "RayKafka2"
+
+version := "1.0"
+
+organization := "com.sundogsoftware"
+
+scalaVersion := "2.12.10"
+
+libraryDependencies ++= Seq(
+"org.apache.spark" %% "spark-core" % "3.0.1" % "provided",
+"org.apache.spark" %% "spark-sql" % "3.0.1" % "provided",
+"org.apache.spark" %% "spark-mllib" % "3.0.1" % "provided",
+"org.apache.spark" %% "spark-streaming" % "3.0.0" % "provided",
+"org.apache.spark" % "spark-streaming-kafka-0-10_2.12" % "3.0.1",
+"org.apache.kafka" %% "kafka" % "2.6.0"
+)
+----------------------------------------------------------------------
+
+How to build the jar file using SBT:
+* After the project structure has been prepared
+* spark assembly
+-> This will take a while to finish if "provided" is not specified (and consume big space too)
+-> Once it is finished, find the outout from F:\ISAE\R109\2020\sbt3\target\scala-2.12\RayKafka2-assembly-1.0.jar
+
+
+How to build the jar file using IntelliJ:
+File->Project Structure->Artifacts
+Tick checkbox: Include in Project build
+From Avaialable Elemets pane: Double Click "SparkScalaCourse compile output" under "SparkScalaCourse"
+	-> Basically include only those that are needde to minimize the jar file size
+	-> The output jar will be logged when you build
+
+[spark-submit]
+Runs the jar file
+A. For the jar file created via SBT:
+F:\ISAE\R109\2020\SparkScalaCourse>f:\spark\bin\spark-submit --class com.sundogsoftware.spark.RayKafka2 RayKafka2-assembly-1.0.jar
+
+B. For the jar file created via IntelliJ:
+F:\ISAE\R109\2020\SparkScalaCourse>f:\spark\bin\spark-submit --class com.sundogsoftware.spark.RayKafka2 F:\ISAE\R109\2020\SparkScalaCourse\out\artifacts\SparkCourse\SparkCourse.jar
+
+Other "hacks" to fix ClassNotFoundException:
+- add all the necessary jar into F:\spark\jars
+-> Ad the kafka-related jars like:
+	spark-streaming-kafka-0-10_2.12-3.0.1.jar
+	spark-token-provider-kafka-0-10_2.12-3.0.1.jar
+	kafka-clients-2.6.0.jar
+	kafka_2.12-2.6.0.jar
+	
+These jars can be located by "Show in Explorer" in "External Libraries" in IntelliJ
+e.g. C:\Users\40204343\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\apache\kafka\kafka-clients\2.6.0
