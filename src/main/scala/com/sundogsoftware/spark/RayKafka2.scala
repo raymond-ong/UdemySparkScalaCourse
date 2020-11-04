@@ -25,7 +25,7 @@ object RayKafka2 {
       "enable.auto.commit" -> (false: java.lang.Boolean)
     )
 
-    val topics = Array("quickstart-events")
+    val topics = Array("quickstart-events", "raytopic1")
     val stream = KafkaUtils.createDirectStream[String, String](
       streamingContext,
       PreferConsistent,
@@ -38,6 +38,7 @@ object RayKafka2 {
     })
 
     lines.print()
+    //lines.foreachRDD(line => println((line)))
 
     streamingContext.start()
     streamingContext.awaitTermination()
