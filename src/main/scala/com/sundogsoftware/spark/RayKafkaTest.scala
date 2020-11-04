@@ -11,7 +11,8 @@ import org.apache.spark.streaming.kafka010._
 import kafka.serializer.StringDecoder
 
 import org.apache.log4j._
-
+// This is the example from Frank Kane's Streaming Course (Kafka Preview)
+// The syntax is outdated, but we can still get some hints on how to process the stream
 object RayKafkaTest {
   def apacheLogPattern():Pattern = {
     val ddd = "\\d{1,3}"

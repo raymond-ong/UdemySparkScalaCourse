@@ -8,7 +8,11 @@ import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import org.apache.log4j._
 import org.apache.spark
 import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark.sql.SparkSession
 
+// This is based on Frank Kane's Kafka Streaming tutorial,
+// but updated to use newer syntax.
+// Below it, will write the result to parquet file
 object RayKafka2 {
 
   def main(args: Array[String]): Unit = {
@@ -34,11 +38,27 @@ object RayKafka2 {
 
     val lines = stream.map(record => {
       //println(record.key().toString, record.value().toString)
-      (record.value().toString)
+      ((record.key().toString), record.value().toString)
     })
 
-    lines.print()
-    //lines.foreachRDD(line => println((line)))
+    //lines.print()
+    lines.foreachRDD(rdd => {
+      val spark = SparkSession.builder.config(rdd.sparkContext.getConf).getOrCreate()
+      import spark.implicits._
+      val rawDF = rdd.toDF("key","value")
+      //rawDF.printSchema()
+      /*
+      val valueCol = rawDF.select("value")
+      if (valueCol.count() > 0) {
+        valueCol.show()
+      }
+      */
+      val columnNames = Seq("key","value")
+      val query = rawDF.select(columnNames.head, columnNames.tail: _*)
+      if (query.count() > 0) {
+        query.write.mode("append").parquet("parquet.DirectStream.Test")
+      }
+    })
 
     streamingContext.start()
     streamingContext.awaitTermination()
