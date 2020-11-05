@@ -20,6 +20,7 @@ object RayKafkaParquetTest {
       .format("kafka")
       .option("kafka.bootstrap.servers", "192.168.56.124:9092")
       .option("subscribe", "raytopic1")
+      .option("failOnDataLoss", "false") // Added this because of an error one time when the jar file was ran on a different location
       .load()
 
     /*
@@ -43,6 +44,8 @@ object RayKafkaParquetTest {
 */
 
     // try writing to parquet
+    println("Start listening to messages from kafka topic then write it to parquet as it is received.")
+    println("No further message logged here when new message is received from kafka.")
     df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
       .as[(String, String)]
       .writeStream

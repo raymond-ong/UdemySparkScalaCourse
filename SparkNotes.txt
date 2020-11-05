@@ -79,6 +79,8 @@ F:\ISAE\R109\2020\SparkScalaCourse>f:\spark\bin\spark-submit --class com.sundogs
 
 B. For the jar file created via IntelliJ:
 F:\ISAE\R109\2020\SparkScalaCourse>f:\spark\bin\spark-submit --class com.sundogsoftware.spark.RayKafka2 F:\ISAE\R109\2020\SparkScalaCourse\out\artifacts\SparkCourse\SparkCourse.jar
+F:\ISAE\R109\2020\SparkScalaCourse>f:\spark\bin\spark-submit --class com.sundogsoftware.spark.RayKafkaParquetTest F:\ISAE\R109\2020\SparkScalaCourse\out\artifacts\SparkCourse\SparkCourse.jar
+F:\ISAE\R109\2020\SparkScalaCourse>f:\spark\bin\spark-submit --class com.sundogsoftware.spark.RayParquetKafkaReader F:\ISAE\R109\2020\SparkScalaCourse\out\artifacts\SparkCourse\SparkCourse.jar
 
 Other "hacks" to fix ClassNotFoundException:
 - add all the necessary jar into F:\spark\jars
@@ -87,6 +89,8 @@ Other "hacks" to fix ClassNotFoundException:
 	spark-token-provider-kafka-0-10_2.12-3.0.1.jar
 	kafka-clients-2.6.0.jar
 	kafka_2.12-2.6.0.jar
+	spark-sql-kafka-0-10_2.12-3.0.1.jar    (for kafka streaming)
+	commons-pool2-2.6.2.jar    (for kafka streaming)
 	
 These jars can be located by "Show in Explorer" in "External Libraries" in IntelliJ
 e.g. C:\Users\40204343\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\apache\kafka\kafka-clients\2.6.0
